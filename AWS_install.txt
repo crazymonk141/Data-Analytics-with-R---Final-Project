@@ -1,0 +1,71 @@
+Type of image Ubuntu Server 22.04 64 bits t2.large 8Gb RAM
+Create a new pair or keys: .pem, RSA. Create a name for the file and store in a secure place.
+Network: Allow SSH, HTTPS and HTTP
+Storage: 16Gb
+
+Connect to instance: user ubuntu. Via AWS web, or SSH (ssh -i "DAR_2024.pem" ubuntu@ec2-15-237-123-213.eu-west-3.compute.amazonaws.com)
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt install r-base-dev
+
+sudo R
+install.packages(c('tidyverse', 'shiny')). Takes a while and you get some errors due to missing ubuntu packages. Recall the errors and install required packages via apt:
+
+libssl-dev
+libfontconfig1-dev
+libxml2-dev
+libharfbuzz-dev 
+libfribidi-dev
+libfreetype6-dev
+libpng-dev
+libtiff5-dev
+libjpeg-dev
+libcurl4-openssl-dev
+libcurl4-gnutls-dev
+
+
+Try it again install.packages(c('tidyverse'))
+
+RStudio Server
+sudo apt-get install gdebi-core
+wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2023.09.1-494-amd64.deb
+sudo gdebi rstudio-server-2023.09.1-494-amd64.deb
+sudo rstudio-server start
+Ensure that port 8787 is open in your security group settings on AWS
+http://your-instance-ip:8787
+
+Shiny Server
+wget https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.20.1002-amd64.deb
+sudo gdebi shiny-server-1.5.20.1002-amd64.deb
+Ensure that port 3838 is open in your security group settings on AWS
+http://your-instance-ip:3838
+
+Managing ports:
+Step 1: Navigate to the AWS Management Console
+Log in to your AWS account and navigate to the AWS Management Console.
+
+Step 2: Open the EC2 Dashboard
+Go to the EC2 service by clicking on "Services" in the top left corner and selecting "EC2" under "Compute."
+
+Step 3: Select Your Instance
+In the EC2 Dashboard, click on "Instances" in the left navigation pane. Select the instance for which you want to open port 8787.
+
+Step 4: Find Your Security Group
+In the instance details section at the bottom, find the "Security Groups" tab. Click on the linked security group name. This will take you to the security group associated with your instance.
+
+Step 5: Edit Inbound Rules
+In the security group details page, click on the "Inbound rules" tab.
+
+Step 6: Add a Rule for Port 8787
+Click the "Edit inbound rules" button. Then, click "Add rule" to add a new rule. Configure the rule as follows:
+
+Type: Custom TCP Rule
+Protocol: TCP
+Port Range: 8787
+Source: 0.0.0.0/0 (This allows access from any IP address. You might want to restrict it to specific IPs based on your needs.)
+Step 7: Save Changes
+Click the "Save rules" button to apply the changes.
+
+To enter in RStudio Server: Change ubuntu user default password

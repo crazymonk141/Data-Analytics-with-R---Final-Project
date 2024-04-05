@@ -1,0 +1,74 @@
+/* Sidebar Background */
+.col-sm-4 {
+  background-color: #F0F2F5; /* Soft Gray */
+}
+
+/* Well Backgrounds */
+.col-sm-4 .well {
+  background-color: #FFFFFF; /* White for contrast */
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Lighter shadow for a softer look */
+}
+
+/* Text Color */
+.col-sm-4 h3, .col-sm-4 h4 {
+  color: #343A40; /* Dark Gray */
+}
+
+/* Button Background */
+#resetButton {
+  background-color: #007BFF; /* Bootstrap Primary Blue */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Button Hover Background */
+#resetButton:hover {
+  background-color: #0056b3; /* A darker shade of Bootstrap Primary Blue */
+}
+
+/* Custom styles for the mainPanel and its components */
+.nav-tabs > li > a {
+  background-color: #f8f9fa; /* Light gray background for tabs */
+  color: #495057; /* Dark gray text color */
+  border: solid 1px #dee2e6; /* Border color */
+}
+
+.nav-tabs > li > a:hover {
+  background-color: #e9ecef; /* Slightly darker tab background on hover */
+  border-color: #adb5bd; /* Darker border color on hover */
+}
+
+.tab-content {
+  padding: 20px; /* Padding within the content area of a tab */
+  background-color: #ffffff; /* White background for content */
+  border: solid 1px #dee2e6; /* Light gray border around the content */
+  border-top: none; /* Remove the top border to blend with the tab */
+}
+
+/* Styling for descriptions or additional text within tabs */
+.tab-description {
+  margin-bottom: 15px; /* Space between description text and content */
+  color: #6c757d; /* Gray text for descriptions */
+}
+
+/* Button styles, if used within mainPanel */
+.download-button {
+  background-color: #007bff; /* Bootstrap primary blue */
+  color: #ffffff; /* White text */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding inside the button */
+  font-size: 16px; /* Larger text size */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Cursor changes to pointer to indicate it's clickable */
+}
+
+.download-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
