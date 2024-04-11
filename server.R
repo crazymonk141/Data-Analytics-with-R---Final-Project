@@ -3,21 +3,57 @@ library(DT)
 library(ggplot2)
 library(readr)
 library(plotly)
-library(xgboost) # Ensure you load xgboost if you're going to use xgb.plot.importance
+library(bslib)
+library(xgboost)
 library('this.path')
-
 
 airline_data <- read_csv(file.path(this.dir(),"Airline_Dataset.csv"))
 xgb_model <- readRDS("xgb_model.rds")
 importance_matrix <- readRDS("importance_matrix.rds")
+importance_matrix_df <- as.data.frame(importance_matrix)
 confusion_matrix <- readRDS("confusion_matrix.rds")
-
+confusion_matrix_df <- as.data.frame(as.table(confusion_matrix))
+names(confusion_matrix_df) <- c("Actual", "Predicted", "Frequency")
+print(confusion_matrix_df)
 # Define server logic
 server <- function(input, output, session) {
   
+  observe(session$setCurrentTheme(
+    if(isTRUE(input$dark_mode)){
+      bs_theme(bootswatch = "cyborg")
+    } else {
+      bs_theme(bootswatch = "cosmo")
+    }
+  ))
+  
+  
   output$feature_importance_plot <- renderPlot({
-    # Plotting code for feature importance
-    xgb.plot.importance(importance_matrix)
+    # Assuming importance_matrix is already a dataframe with columns Feature and Importance
+    ggplot(importance_matrix, aes(x = reorder(Feature, Importance), y = Importance)) +
+      geom_col(fill = "steelblue") +
+      coord_flip() +  # Flip coordinates to make the plot horizontal
+      theme_minimal() +
+      labs(title = "Feature Importance",
+           y = "Importance Score", x = "Features") +
+      theme(plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),
+            axis.title.x = element_text(size = 14, face = "bold"),
+            axis.title.y = element_text(size = 14, face = "bold"),
+            axis.text.x = element_text(size = 12),
+            axis.text.y = element_text(size = 12))
+  })
+  
+  plot_confusion_matrix <- function(df) {
+    ggplot(data = df, aes(x = Actual, y = Predicted, fill = Frequency)) +
+      geom_tile() +
+      geom_text(aes(label = Frequency), vjust = 1.5, color = "white") +
+      scale_fill_gradient(low = "blue", high = "red") +
+      labs(x = "Actual", y = "Predicted", fill = "Frequency") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  }
+  
+  output$confMatrixPlot <- renderPlot({
+    plot_confusion_matrix(confusion_matrix_df)
   })
   
   prediction <- eventReactive(input$predict, {
@@ -116,11 +152,15 @@ server <- function(input, output, session) {
   
   # Interactive Plot
   output$interactivePlot <- renderPlotly({
-    plot_ly(data = filtered_data(), x = ~`Flight Distance`, y = ~`Departure Delay in Minutes`, color = ~satisfaction,
-            type = "scatter", mode = "markers", marker = list(size = 10, opacity = 0.8)) %>%
-      layout(title = "Flight Distance vs. Departure Delay",
-             xaxis = list(title = "Flight Distance (miles)"),
-             yaxis = list(title = "Departure Delay (minutes)"),
+    # Use aes_string() to specify variables by name
+    plot_ly(data = filtered_data(), x = as.formula(paste0("~`", input$xVariable, "`")), 
+            y = as.formula(paste0("~`", input$yVariable, "`")), 
+            color = ~satisfaction,
+            type = "scatter", mode = "markers", 
+            marker = list(size = 10, opacity = 0.8)) %>%
+      layout(title = paste(input$xVariable, "vs", input$yVariable),
+             xaxis = list(title = input$xVariable),
+             yaxis = list(title = input$yVariable),
              legend = list(title = "Satisfaction Level"))
   })
   
